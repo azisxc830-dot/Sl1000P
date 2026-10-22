@@ -469,6 +469,13 @@ if ($("clearTrades")) $("clearTrades").addEventListener("click", () => {
 renderJournal();
 previewTrade();
 calculateRisk();
+       (async function () {
+  try {
+    const response = await fetch(
+      "https://8000-m-s-kkb-use5c2-2424fugr3ggvz-c.us-east5-2.prod.colab.dev/health"
+    );
+    const data = await response.json();
+    console.log("Sl1000P
 </script>
 </body>
 </html>
