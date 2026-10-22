@@ -1,495 +1,233 @@
 
-
-       
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080d18">
-<title>Sl1000P Trading Simulator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sl1000P</title>
 <style>
-:root{--bg:#080d18;--panel:#111a2b;--line:#26344b;--text:#edf3ff;--muted:#8fa2bf;--green:#20d6a0;--red:#ff647c;--blue:#65a9ff;--gold:#ffc766}
+:root{color-scheme:dark;--bg:#0b1018;--panel:#151e2b;--line:#293548;--text:#f3f6fb;--muted:#9aa9bc;--blue:#64adff;--green:#30d6a0;--red:#ff7180}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif}
-header{padding:20px 16px;background:#14223b;border-bottom:1px solid var(--line)}
-h1{margin:0;font-size:25px}
-header p,.muted{color:var(--muted)}
-main{max-width:900px;margin:auto;padding:14px}
-.panel,.metric{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.metric label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
-.metric strong{font-size:18px;overflow-wrap:anywhere}
-h2{font-size:17px;margin:0 0 12px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1;min-width:0}
-button,input,select{font:inherit;padding:10px;border-radius:8px;border:1px solid var(--line);background:#0a1322;color:var(--text)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+header{padding:20px 16px 12px;background:#111925;border-bottom:1px solid var(--line)}
+.brand{font-size:25px;font-weight:800;letter-spacing:.5px}
+.brand span{color:var(--blue)}
+.sub{color:var(--muted);font-size:12px;margin-top:5px}
+.status{display:inline-block;margin-top:12px;padding:7px 10px;border-radius:8px;background:#342b1a;color:#ffd47d;font-size:12px}
+nav{display:flex;gap:7px;padding:12px;position:sticky;top:0;background:var(--bg);z-index:2}
+nav button{flex:1;padding:11px 4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--muted);font-weight:bold;font-size:12px}
+nav button.active{background:#203750;color:#fff;border-color:var(--blue)}
+main{padding:0 12px 30px;max-width:760px;margin:auto}
+section{display:none}
+section.active{display:block}
+h2{font-size:20px;margin:12px 0 14px}
+h3{font-size:15px;margin:0 0 13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:10px;min-width:0}
+.label{font-size:12px;color:var(--muted);margin-bottom:9px}
+.value{font-size:22px;font-weight:750;overflow-wrap:anywhere}
+.small{font-size:12px;color:var(--muted);line-height:1.6}
+.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+input,select,textarea{width:100%;padding:12px;background:#0d1420;border:1px solid var(--line);border-radius:9px;color:white;font-size:14px;margin:6px 0 12px}
+label{font-size:12px;color:var(--muted)}
 button{cursor:pointer}
-button.primary{background:#1769d2}
-button.active{border-color:var(--blue)}
-input,select{width:100%;min-width:0}
-.field{margin-bottom:10px;min-width:0}
-.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
-canvas{width:100%;height:auto;display:block;background:#0a1120;border-radius:8px}
-.tag{font-size:11px;background:#20314a;padding:5px 8px;border-radius:6px}
-.green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}
-.small{font-size:12px}
-.result{background:#0a1322;padding:12px;border-radius:8px;line-height:1.8;overflow-wrap:anywhere}
-.tablewrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{text-align:left;padding:8px 5px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--muted)}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 15px 25px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}}
+.action{border:0;border-radius:9px;padding:12px;color:#fff;font-weight:bold}
+.buy{background:#138b68}.sell{background:#c34455}.primary{background:#2868a7}
+.outline{background:#1b293a;border:1px solid var(--line);color:white;border-radius:8px;padding:9px}
+canvas{display:block;width:100%;height:210px}
+.pairrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.pairrow button{flex:1;min-width:65px}
+.signal{background:#1c2d3c;border-radius:9px;padding:12px;line-height:1.7}
+ul{padding-left:20px;line-height:1.9}
+.entry{padding:11px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+footer{text-align:center;padding:15px;color:var(--muted);font-size:11px}
 </style>
 </head>
 <body>
 <header>
-<h1>Sl1000P <span class="tag">SIMULATOR</span></h1>
-<p>Grafik • Strategi • Jurnal • Kalkulator Risiko</p>
+  <div class="brand"><span>Sl</span>1000P</div>
+  <div class="sub">PROFESSIONAL FOREX TRADING · ANDROID</div>
+  <div class="status">● MODE SIMULASI · MT5 BELUM TERHUBUNG</div>
 </header>
+
+<nav>
+  <button class="active" data-tab="dashboard">Dashboard</button>
+  <button data-tab="analisis">Grafik & Analisis</button>
+  <button data-tab="strategi">Strategi & Jurnal</button>
+</nav>
+
 <main>
-<div class="grid">
-<div class="metric"><label>Saldo simulasi</label><strong id="balance">Rp10.000.000</strong></div>
-<div class="metric"><label>Total P/L jurnal</label><strong id="totalPL">Rp0</strong></div>
-<div class="metric"><label>Jumlah transaksi</label><strong id="tradeCount">0</strong></div>
-<div class="metric"><label>Win rate</label><strong id="winRate">0%</strong></div>
-</div>
-
-<section class="panel">
-<h2>1. Grafik Candlestick</h2>
-<div class="row">
-<div class="field"><label>Timeframe simulasi</label>
-<select id="timeframe"><option>M1</option><option selected>M5</option><option>M15</option><option>H1</option></select></div>
-<div class="field"><label>Tampilan</label>
-<select id="chartMode"><option value="candles">Candlestick</option><option value="line">Garis harga</option></select></div>
-</div>
-<div class="small muted">🟢 EMA20 &nbsp; 🟡 EMA50</div>
-<canvas id="chart" width="720" height="330"></canvas>
-<div class="row">
-<button id="refreshChart" class="primary">Simulasi baru</button>
-<button id="toggleEMA">Tampilkan/sembunyikan EMA</button>
-</div>
-<div class="result" id="priceInfo" style="margin-top:10px">Menyiapkan data simulasi...</div>
+<section id="dashboard" class="active">
+  <h2>Dashboard Profesional</h2>
+  <div class="grid">
+    <div class="card"><div class="label">Saldo simulasi</div><div class="value" id="balance">$10,000.00</div></div>
+    <div class="card"><div class="label">Equity simulasi</div><div class="value" id="equity">$10,000.00</div></div>
+    <div class="card"><div class="label">Profit / Loss</div><div class="value green" id="pnl">$0.00</div></div>
+    <div class="card"><div class="label">Total order</div><div class="value" id="orders">0</div></div>
+  </div>
+  <div class="card">
+    <h3>Status koneksi</h3>
+    <div class="row"><span>MetaTrader 5</span><strong class="red">Belum terhubung</strong></div>
+    <p class="small">Belum menerima data akun atau harga broker. Semua angka pada dashboard ini hanya data simulasi.</p>
+  </div>
+  <div class="card">
+    <h3>Simulasi order cepat</h3>
+    <label>Pasangan mata uang</label>
+    <select id="quickPair"><option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>XAU/USD</option></select>
+    <label>Lot</label><input id="quickLot" type="number" min="0.01" step="0.01" value="0.01">
+    <div class="grid">
+      <div><label>Stop Loss (pips)</label><input id="quickSL" type="number" min="1" value="20"></div>
+      <div><label>Take Profit (pips)</label><input id="quickTP" type="number" min="1" value="40"></div>
+    </div>
+    <div class="grid">
+      <button class="action buy" onclick="placeOrder('BUY','quickPair','quickLot','quickSL','quickTP')">SIMULASI BUY</button>
+      <button class="action sell" onclick="placeOrder('SELL','quickPair','quickLot','quickSL','quickTP')">SIMULASI SELL</button>
+    </div>
+  </div>
+  <div class="card"><h3>Order terbaru</h3><div id="recent" class="small">Belum ada order simulasi.</div></div>
 </section>
 
-<section class="panel">
-<h2>2. Strategi EMA20/50 + RSI14 + MACD</h2>
-<div class="result" id="strategy">Menghitung indikator...</div>
-<p class="small muted">Sinyal hanya berdasarkan data harga buatan, bukan rekomendasi trading.</p>
+<section id="analisis">
+  <h2>Grafik dan Analisis</h2>
+  <div class="card">
+    <label>Pasangan mata uang</label>
+    <select id="pair" onchange="drawChart()">
+      <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>XAU/USD</option>
+    </select>
+    <label>Timeframe</label>
+    <select id="timeframe" onchange="drawChart()">
+      <option>M5</option><option>M15</option><option selected>H1</option><option>H4</option><option>D1</option>
+    </select>
+    <div class="row"><strong id="chartTitle">EUR/USD</strong><span class="small">Ilustrasi, bukan harga live</span></div>
+    <canvas id="chart" width="600" height="300"></canvas>
+    <div class="small"><span style="color:#e9bd69">━ EMA 20</span> &nbsp; <span style="color:#64adff">━ EMA 50</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">EMA 20</div><div class="value blue">Aktif</div><div class="small">Garis tren cepat ilustratif</div></div>
+    <div class="card"><div class="label">EMA 50</div><div class="value blue">Aktif</div><div class="small">Garis tren lambat ilustratif</div></div>
+    <div class="card"><div class="label">RSI (14)</div><div class="value">—</div><div class="small">Menunggu data harga</div></div>
+    <div class="card"><div class="label">MACD (12,26,9)</div><div class="value">—</div><div class="small">Menunggu data harga</div></div>
+  </div>
+  <div class="card">
+    <h3>Panel analisis</h3>
+    <div class="signal">Arah tren: <strong>Belum dikonfirmasi</strong><br>RSI dan MACD: belum dihitung dari harga nyata.<br><span class="small">Jangan gunakan ilustrasi sebagai sinyal trading.</span></div>
+  </div>
 </section>
 
-<div class="columns">
-<section class="panel">
-<h2>3. Kalkulator Risiko</h2>
-<div class="field"><label>Saldo akun (Rp)</label><input id="riskBalance" type="number" value="10000000" min="0"></div>
-<div class="field"><label>Risiko per transaksi (%)</label><input id="riskPercent" type="number" value="1" min="0.1" max="100" step="0.1"></div>
-<div class="field"><label>Stop loss (poin)</label><input id="stopPoints" type="number" value="200" min="1"></div>
-<div class="field"><label>Nilai per poin per 1 lot (Rp, perkiraan)</label><input id="pointValue" type="number" value="10000" min="1"></div>
-<button id="calculateRisk" class="primary">Hitung risiko</button>
-<div class="result" id="riskResult" style="margin-top:10px"></div>
-<p class="small muted">Perkiraan edukasi. Nilai poin/lot harus disesuaikan dengan spesifikasi instrumen broker.</p>
+<section id="strategi">
+  <h2>Strategi dan Jurnal</h2>
+  <div class="card">
+    <h3>Kalkulator risiko</h3>
+    <label>Saldo akun ($)</label><input id="riskBalance" type="number" min="0" value="10000">
+    <label>Risiko per transaksi (%)</label><input id="riskPercent" type="number" min="0" max="100" step="0.1" value="1">
+    <label>Stop Loss (pips)</label><input id="riskSL" type="number" min="1" value="20">
+    <button class="action primary" onclick="calcRisk()">HITUNG RISIKO</button>
+    <div class="signal" style="margin-top:12px">Risiko maksimal: <strong id="riskMoney">$100.00</strong><br>Lot perkiraan EUR/USD: <strong id="riskLot">0.50</strong><p class="small">Perkiraan memakai nilai $10 per pip untuk 1 lot standar EUR/USD. Perhitungan broker dapat berbeda.</p></div>
+  </div>
+  <div class="card">
+    <h3>Checklist sebelum entry</h3>
+    <label><input type="checkbox" class="check" style="width:auto;margin:0 7px 0 0"> Arah tren sudah diperiksa</label><br><br>
+    <label><input type="checkbox" class="check" style="width:auto;margin:0 7px 0 0"> Sinyal strategi sudah jelas</label><br><br>
+    <label><input type="checkbox" class="check" style="width:auto;margin:0 7px 0 0"> Stop Loss dan risiko ditentukan</label><br><br>
+    <label><input type="checkbox" class="check" style="width:auto;margin:0 7px 0 0"> Risiko sesuai rencana</label>
+  </div>
+  <div class="card">
+    <h3>Strategi</h3>
+    <ul>
+      <li><strong>EMA 20/50:</strong> amati persilangan dan arah tren.</li>
+      <li><strong>RSI:</strong> periksa momentum, jangan gunakan sendiri.</li>
+      <li><strong>MACD:</strong> periksa momentum dan konfirmasi tren.</li>
+    </ul>
+    <p class="small">Strategi di atas adalah panduan belajar, bukan jaminan keuntungan.</p>
+  </div>
+  <div class="card">
+    <h3>Jurnal trading</h3>
+    <label>Pasangan</label><select id="journalPair"><option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>XAU/USD</option></select>
+    <label>Jenis order</label><select id="journalSide"><option>BUY</option><option>SELL</option></select>
+    <label>Hasil simulasi ($)</label><input id="journalResult" type="number" step="0.01" value="0">
+    <label>Catatan</label><textarea id="journalNote" rows="2" placeholder="Alasan entry dan evaluasi"></textarea>
+    <button class="action primary" onclick="addJournal()">SIMPAN JURNAL</button>
+    <button class="outline" onclick="exportCSV()">EKSPOR CSV</button>
+    <div id="journalList" style="margin-top:12px" class="small">Belum ada catatan jurnal.</div>
+  </div>
 </section>
-
-<section class="panel">
-<h2>4. Catat Transaksi Simulasi</h2>
-<div class="field"><label>Jenis transaksi</label><select id="tradeSide"><option>BUY</option><option>SELL</option></select></div>
-<div class="field"><label>Instrumen</label><input id="symbol" value="XAUUSD" maxlength="20"></div>
-<div class="field"><label>Harga masuk</label><input id="entry" type="number" value="4000" step="0.01"></div>
-<div class="field"><label>Harga keluar</label><input id="exitPrice" type="number" value="4005" step="0.01"></div>
-<div class="field"><label>Lot simulasi</label><input id="lots" type="number" value="0.01" min="0.01" step="0.01"></div>
-<div class="field"><label>Catatan</label><input id="notes" placeholder="Alasan masuk / evaluasi"></div>
-<button id="addTrade" class="primary">Simpan transaksi simulasi</button>
-<div class="result" id="tradePreview" style="margin-top:10px">Isi harga untuk menghitung P/L.</div>
-</section>
-</div>
-
-<section class="panel">
-<h2>5. Jurnal Trading</h2>
-<p class="small muted">Data disimpan di penyimpanan lokal browser pada perangkat ini.</p>
-<div class="row">
-<button id="exportCSV">Ekspor CSV</button>
-<button id="clearTrades">Hapus semua jurnal</button>
-</div>
-<div class="tablewrap" style="margin-top:10px">
-<table>
-<thead><tr><th>Tanggal</th><th>Instrumen</th><th>Sisi</th><th>Lot</th><th>P/L</th><th>Catatan</th><th>Aksi</th></tr></thead>
-<tbody id="journal"><tr><td colspan="7">Belum ada transaksi.</td></tr></tbody>
-</table>
-</div>
-</section>
-<div class="panel small muted">MODE SIMULASI OFFLINE. Sl1000P belum terhubung ke Exness, MetaTrader 5, atau akun broker. Tidak ada order sungguhan yang dikirim.</div>
 </main>
-<footer>Sl1000P • Simulator edukasi • Gunakan dengan bijak</footer>
+<footer>Sl1000P · Mode simulasi · Bukan koneksi broker langsung</footer>
 
 <script>
-"use strict";
-
-const $ = id => document.getElementById(id);
-let candles = [];
-let showEMA = true;
-
-function ema(values, period) {
-  if (!values.length) return [];
-  const a = 2 / (period + 1);
-  let prev = values[0];
-  return values.map((v, i) => {
-    prev = i === 0 ? v : v * a + prev * (1 - a);
-    return prev;
-  });
+const $=id=>document.getElementById(id);
+let balance=10000,orders=[],journal=[];
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('main section').forEach(x=>x.classList.remove('active'));
+ b.classList.add('active');$(b.dataset.tab).classList.add('active');
+ if(b.dataset.tab==='analisis')drawChart();
+}));
+function money(n){return '$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function placeOrder(side,pairId,lotId,slId,tpId){
+ const lot=Number($(lotId).value),sl=Number($(slId).value),tp=Number($(tpId).value);
+ if(!Number.isFinite(lot)||lot<=0||lot>100||sl<=0||tp<=0){alert('Periksa lot, Stop Loss, dan Take Profit.');return}
+ const o={pair:$(pairId).value,side,lot,sl,tp,time:new Date().toLocaleString('id-ID'),result:0};
+ orders.unshift(o);renderOrders();alert('Order '+side+' tersimpan sebagai SIMULASI. Tidak dikirim ke broker.');
 }
-
-function rsi(values, period = 14) {
-  if (values.length <= period) return 50;
-  let gain = 0, loss = 0;
-  for (let i = values.length - period; i < values.length; i++) {
-    const d = values[i] - values[i - 1];
-    if (d > 0) gain += d;
-    else loss -= d;
-  }
-  if (loss === 0) return gain ? 100 : 50;
-  return 100 - 100 / (1 + gain / loss);
+function renderOrders(){
+ $('balance').textContent=money(balance);
+ $('equity').textContent=money(balance);
+ $('pnl').textContent=money(0);
+ $('orders').textContent=orders.length;
+ $('recent').innerHTML=orders.length?orders.slice(0,5).map(o=>`<div class="entry"><strong>${o.side} ${o.pair}</strong> · ${o.lot} lot<br><span class="small">SL ${o.sl} pips · TP ${o.tp} pips · ${o.time}</span></div>`).join(''):'Belum ada order simulasi.';
 }
-
-function macd(values) {
-  const fast = ema(values, 12);
-  const slow = ema(values, 26);
-  const line = values.map((v, i) => fast[i] - slow[i]);
-  const signal = ema(line, 9);
-  return {
-    line, signal,
-    hist: line.map((v, i) => v - signal[i])
-  };
+function calcRisk(){
+ const bal=Number($('riskBalance').value),pct=Number($('riskPercent').value),sl=Number($('riskSL').value);
+ if(bal<=0||pct<0||pct>100||sl<=0){alert('Masukkan angka yang valid.');return}
+ const risk=bal*pct/100;
+ $('riskMoney').textContent=money(risk);
+ $('riskLot').textContent=(risk/(sl*10)).toFixed(2);
 }
-
-function makeCandles() {
-  let price = 4000;
-  candles = [];
-  for (let i = 0; i < 100; i++) {
-    const open = price;
-    const close = Math.max(1, open + (Math.random() - 0.48) * 9);
-    candles.push({
-      open, close,
-      high: Math.max(open, close) + Math.random() * 4,
-      low: Math.max(0.01, Math.min(open, close) - Math.random() * 4)
-    });
-    price = close;
-  }
-  drawChart();
-  updateStrategy();
+function addJournal(){
+ const r=Number($('journalResult').value);
+ if(!Number.isFinite(r)){alert('Masukkan hasil yang valid.');return}
+ journal.unshift({pair:$('journalPair').value,side:$('journalSide').value,result:r,note:$('journalNote').value,time:new Date().toLocaleString('id-ID')});
+ renderJournal();
 }
-
-function drawChart() {
-  const canvas = $("chart");
-  if (!canvas || !candles.length) return;
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  const closes = candles.map(c => c.close);
-  const e20 = ema(closes, 20), e50 = ema(closes, 50);
-  const min = Math.min(...candles.map(c => c.low));
-  const max = Math.max(...candles.map(c => c.high));
-  const pad = 28;
-  const x = i => pad + i * (W - pad * 2) / (candles.length - 1);
-  const y = p => H - pad - (p - min) / (max - min || 1) * (H - pad * 2);
-
-  ctx.strokeStyle = "#26344b";
-  for (let i = 0; i < 5; i++) {
-    const yy = pad + i * (H - pad * 2) / 4;
-    ctx.beginPath();
-    ctx.moveTo(pad, yy);
-    ctx.lineTo(W - pad, yy);
-    ctx.stroke();
-  }
-
-  if ($("chartMode") && $("chartMode").value === "line") {
-    ctx.strokeStyle = "#65a9ff";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    closes.forEach((p, i) => i ? ctx.lineTo(x(i), y(p)) : ctx.moveTo(x(i), y(p)));
-    ctx.stroke();
-  } else {
-    const step = (W - pad * 2) / candles.length;
-    candles.forEach((c, i) => {
-      const xx = x(i);
-      const color = c.close >= c.open ? "#20d6a0" : "#ff647c";
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(xx, y(c.high));
-      ctx.lineTo(xx, y(c.low));
-      ctx.stroke();
-      ctx.fillRect(
-        xx - step * 0.28,
-        Math.min(y(c.open), y(c.close)),
-        Math.max(2, step * 0.56),
-        Math.max(2, Math.abs(y(c.open) - y(c.close)))
-      );
-    });
-  }
-
-  if (showEMA) {
-    [[e20, "#20d6a0"], [e50, "#ffc766"]].forEach(([arr, color]) => {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.7;
-      ctx.beginPath();
-      arr.forEach((p, i) => i ? ctx.lineTo(x(i), y(p)) : ctx.moveTo(x(i), y(p)));
-      ctx.stroke();
-    });
-  }
-
-  if ($("priceInfo")) {
-    $("priceInfo").textContent =
-      "Harga simulasi terakhir: " + closes[closes.length - 1].toFixed(2) +
-      " | Timeframe: " + ($("timeframe") ? $("timeframe").value : "M5");
-  }
+function renderJournal(){
+ $('journalList').innerHTML=journal.length?journal.map(j=>`<div class="entry"><strong>${j.side} ${j.pair}</strong> · <span class="${j.result>=0?'green':'red'}">${money(j.result)}</span><br><span class="small">${j.time}<br>${escapeHTML(j.note)}</span></div>`).join(''):'Belum ada catatan jurnal.';
 }
-
-function updateStrategy() {
-  const closes = candles.map(c => c.close);
-  if (!closes.length || !$("strategy")) return;
-  const e20 = ema(closes, 20), e50 = ema(closes, 50);
-  const r = rsi(closes, 14);
-  const m = macd(closes);
-  const i = closes.length - 1;
-
-  let signal = "NETRAL";
-  if (e20[i] > e50[i] && m.hist[i] > 0 && r < 70) signal = "BUY";
-  if (e20[i] < e50[i] && m.hist[i] < 0 && r > 30) signal = "SELL";
-
-  $("strategy").innerHTML =
-    "Sinyal simulasi: <b>" + signal + "</b><br>" +
-    "EMA20: " + e20[i].toFixed(3) + "<br>" +
-    "EMA50: " + e50[i].toFixed(3) + "<br>" +
-    "RSI14: " + r.toFixed(2) + "<br>" +
-    "MACD: " + m.line[i].toFixed(4) + "<br>" +
-    "Signal MACD: " + m.signal[i].toFixed(4) + "<br>" +
-    "Histogram: " + m.hist[i].toFixed(4);
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function exportCSV(){
+ if(!journal.length){alert('Belum ada jurnal untuk diekspor.');return}
+ const rows=[['Waktu','Pair','Order','Hasil simulasi USD','Catatan'],...journal.map(j=>[j.time,j.pair,j.side,j.result,j.note])];
+ const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download='sl1000p-jurnal.csv';a.click();URL.revokeObjectURL(a.href);
 }
-
-if ($("refreshChart")) $("refreshChart").addEventListener("click", makeCandles);
-if ($("toggleEMA")) $("toggleEMA").addEventListener("click", () => {
-  showEMA = !showEMA;
-  drawChart();
-});
-if ($("timeframe")) $("timeframe").addEventListener("change", makeCandles);
-if ($("chartMode")) $("chartMode").addEventListener("change", drawChart);
-
-makeCandles();
-</script>
-
-<script>
-/* BAGIAN 3: JURNAL, RISIKO, DAN PENYIMPANAN LOKAL */
-
-const moneyIDR = n => new Intl.NumberFormat("id-ID", {
-  style: "currency",
-  currency: "IDR",
-  maximumFractionDigits: 0
-}).format(Number(n) || 0);
-
-function loadTrades() {
-  try {
-    const value = JSON.parse(localStorage.getItem("sl1000p_trades") || "[]");
-    return Array.isArray(value) ? value : [];
-  } catch (e) {
-    return [];
-  }
+function drawChart(){
+ const c=$('chart'),ctx=c.getContext('2d'),w=c.width,h=c.height;
+ ctx.clearRect(0,0,w,h);ctx.strokeStyle='#293548';ctx.lineWidth=1;
+ for(let y=25;y<h;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ let vals=[],v=155;
+ for(let i=0;i<25;i++){v+=(Math.sin(i*1.7)*11)+(i%4===0?7:-2);vals.push(v)}
+ const lo=Math.min(...vals)-20,hi=Math.max(...vals)+20;
+ const Y=n=>h-15-(n-lo)/(hi-lo)*(h-35);
+ vals.forEach((v,i)=>{
+  const x=12+i*23,o=i?vals[i-1]:v-8,up=v<o;
+  ctx.strokeStyle=up?'#30d6a0':'#ff7180';ctx.fillStyle=ctx.strokeStyle;
+  ctx.beginPath();ctx.moveTo(x+5,Y(v)-8);ctx.lineTo(x+5,Y(v)+8);ctx.stroke();
+  ctx.fillRect(x,Y(Math.max(o,v)),10,Math.max(3,Math.abs(Y(o)-Y(v))));
+ });
+ [20,50].forEach((period,k)=>{
+  ctx.beginPath();ctx.strokeStyle=k?'#64adff':'#e9bd69';ctx.lineWidth=2;
+  vals.forEach((v,i)=>{
+   const avg=vals.slice(Math.max(0,i-period+1),i+1).reduce((a,b)=>a+b,0)/Math.min(i+1,period);
+   if(i===0)ctx.moveTo(17,Y(avg));else ctx.lineTo(17+i*23,Y(avg));
+  });ctx.stroke();
+ });
+ $('chartTitle').textContent=$('pair').value+' · '+$('timeframe').value;
 }
-
-let journalTrades = loadTrades();
-
-function saveTrades() {
-  try {
-    localStorage.setItem("sl1000p_trades", JSON.stringify(journalTrades));
-    return true;
-  } catch (e) {
-    alert("Penyimpanan browser gagal. Coba gunakan browser biasa, bukan mode privat.");
-    return false;
-  }
-}
-
-function renderJournal() {
-  const total = journalTrades.reduce((s, t) => s + t.pl, 0);
-  const wins = journalTrades.filter(t => t.pl > 0).length;
-  const count = journalTrades.length;
-
-  if ($("totalPL")) {
-    $("totalPL").textContent = moneyIDR(total);
-    $("totalPL").className = total >= 0 ? "green" : "red";
-  }
-  if ($("tradeCount")) $("tradeCount").textContent = count;
-  if ($("winRate")) {
-    $("winRate").textContent = (count ? wins / count * 100 : 0).toFixed(1) + "%";
-  }
-  if ($("balance")) {
-    $("balance").textContent = moneyIDR(10000000 + total);
-  }
-
-  const body = $("journal");
-  if (!body) return;
-  body.innerHTML = "";
-
-  if (!count) {
-    body.innerHTML = '<tr><td colspan="7">Belum ada transaksi.</td></tr>';
-    return;
-  }
-
-  journalTrades.slice().reverse().forEach(t => {
-    const tr = document.createElement("tr");
-    [
-      t.date, t.symbol, t.side, String(t.lots),
-      moneyIDR(t.pl), t.notes || ""
-    ].forEach((value, i) => {
-      const td = document.createElement("td");
-      td.textContent = value;
-      if (i === 4) td.className = t.pl >= 0 ? "green" : "red";
-      tr.appendChild(td);
-    });
-
-    const action = document.createElement("td");
-    const del = document.createElement("button");
-    del.textContent = "Hapus";
-    del.addEventListener("click", () => {
-      if (!confirm("Hapus transaksi ini dari jurnal?")) return;
-      journalTrades = journalTrades.filter(x => x.id !== t.id);
-      saveTrades();
-      renderJournal();
-    });
-    action.appendChild(del);
-    tr.appendChild(action);
-    body.appendChild(tr);
-  });
-}
-
-function previewTrade() {
-  const side = $("tradeSide").value;
-  const entry = Number($("entry").value);
-  const exit = Number($("exitPrice").value);
-  const lots = Number($("lots").value);
-  const diff = side === "BUY" ? exit - entry : entry - exit;
-  const pl = diff * lots * 10000;
-
-  $("tradePreview").textContent =
-    "P/L simulasi perkiraan: " + moneyIDR(pl) +
-    ". Perhitungan memakai asumsi Rp10.000 per perubahan harga 1.00 per lot; hasil broker sebenarnya bisa berbeda.";
-
-  return { entry, exit, lots, pl };
-}
-
-["tradeSide", "entry", "exitPrice", "lots"].forEach(id => {
-  if ($(id)) $(id).addEventListener("input", previewTrade);
-});
-
-if ($("addTrade")) $("addTrade").addEventListener("click", () => {
-  const { entry, exit, lots, pl } = previewTrade();
-  const symbol = $("symbol").value.trim().toUpperCase();
-
-  if (!symbol || !Number.isFinite(entry) || !Number.isFinite(exit) ||
-      entry <= 0 || exit <= 0 || !Number.isFinite(lots) || lots <= 0) {
-    alert("Periksa instrumen, harga masuk, harga keluar, dan lot.");
-    return;
-  }
-
-  const trade = {
-    id: Date.now() + Math.random(),
-    date: new Date().toLocaleString("id-ID"),
-    symbol,
-    side: $("tradeSide").value,
-    entry, exit, lots, pl,
-    notes: $("notes").value.trim()
-  };
-
-  journalTrades.push(trade);
-  if (saveTrades()) {
-    renderJournal();
-    $("notes").value = "";
-    alert("Transaksi simulasi tersimpan di jurnal lokal.");
-  }
-});
-
-function calculateRisk() {
-  const balance = Number($("riskBalance").value);
-  const percent = Number($("riskPercent").value);
-  const stop = Number($("stopPoints").value);
-  const pointValue = Number($("pointValue").value);
-  const result = $("riskResult");
-
-  if (balance <= 0 || percent <= 0 || percent > 100 ||
-      stop <= 0 || pointValue <= 0 ||
-      ![balance, percent, stop, pointValue].every(Number.isFinite)) {
-    result.textContent = "Masukkan angka yang valid dan lebih besar dari nol.";
-    return;
-  }
-
-  const riskMoney = balance * percent / 100;
-  const estimatedLot = riskMoney / (stop * pointValue);
-
-  result.textContent =
-    "Batas risiko: " + moneyIDR(riskMoney) +
-    " | Ukuran lot teoritis: " + estimatedLot.toFixed(4) +
-    " lot. Bulatkan ke bawah sesuai ukuran lot minimum broker dan periksa nilai kontrak instrumen.";
-}
-
-if ($("calculateRisk")) {
-  $("calculateRisk").addEventListener("click", calculateRisk);
-}
-
-if ($("exportCSV")) $("exportCSV").addEventListener("click", () => {
-  if (!journalTrades.length) {
-    alert("Jurnal masih kosong.");
-    return;
-  }
-
-  const quote = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
-  const rows = [
-    ["Tanggal", "Instrumen", "Sisi", "Harga Masuk", "Harga Keluar", "Lot", "P/L Simulasi", "Catatan"],
-    ...journalTrades.map(t => [
-      t.date, t.symbol, t.side, t.entry, t.exit, t.lots, t.pl, t.notes
-    ])
-  ];
-
-  const csv = "\uFEFF" + rows.map(row => row.map(quote).join(",")).join("\r\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "Sl1000P-jurnal.csv";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-});
-
-if ($("clearTrades")) $("clearTrades").addEventListener("click", () => {
-  if (!confirm("Yakin menghapus semua jurnal simulasi? Tindakan ini tidak bisa dibatalkan.")) return;
-  journalTrades = [];
-  saveTrades();
-  renderJournal();
-});
-
-renderJournal();
-previewTrade();
-calculateRisk();
-
-(async function () {
-  const backendUrl =
-    "https://8000-m-s-kkb-use5c2-2424fugr3ggvz-c.us-east5-2.prod.colab.dev/health";
-
-  try {
-    const response = await fetch(backendUrl);
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
-
-    const data = await response.json();
-    console.log("Sl1000P Backend:", data);
-  } catch (error) {
-    console.log("Backend belum dapat diakses:", error);
-  }
-})();
-       
+drawChart();calcRisk();
 </script>
 </body>
-</html>
+         </html>
+       
 
  
